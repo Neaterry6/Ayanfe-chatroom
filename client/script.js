@@ -18,8 +18,10 @@ joinChatButton.addEventListener('click', () => {
         return alert("Please enter a nickname");
     }
     username = usernameInput.value;
+    console.log('Username:', username); // Debug log
     loginContainer.style.display = 'none';
     chatContainer.style.display = 'block';
+    console.log('Containers updated'); // Debug log
     socket.emit('join', { username });
 });
 
@@ -46,7 +48,9 @@ message.addEventListener('keypress', (e) => {
         sendMessage();
     }
     socket.emit('typing', { username });
-});socket.on('chat', (data) => {
+});
+
+socket.on('chat', (data) => {
     feedback.innerHTML = '';
     const messageClass = data.username === username ? 'user-message' : 'other-message';
     output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
@@ -75,3 +79,4 @@ function fetchAIResponse(query) {
         .catch(error => {
             console.error('Error fetching AI response:', error);
         });
+        }
