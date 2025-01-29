@@ -14,9 +14,13 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+#login-container, #chat-container {
+    display: none;
+}
+
 #chat-window {
     height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 20px;
@@ -33,15 +37,17 @@ body {
     padding: 10px;
     border-radius: 4px;
     max-width: 70%;
+    word-wrap: break-word; /* Ensure long words break to fit within the message box */
 }
 
 .user-message {
     background-color: #d9f2ff;
-    align-self: flex-end;
+    text-align: right; /* Align user's messages to the right */
 }
 
 .other-message {
     background-color: #f1f1f1;
+    text-align: left; /* Align other messages to the left */
 }
 
 #feedback {
@@ -64,4 +70,8 @@ button {
     border-radius: 4px;
     color: white;
     cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
 }
