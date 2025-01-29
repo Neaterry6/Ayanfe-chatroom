@@ -1,38 +1,41 @@
 const express = require('express');
-const socket = require('socket.io');
 const http = require('http');
+const socketIo = require('socket.io');
+const cors = require('cors');
 const path = require('path');
-
 const app = express();
 const server = http.createServer(app);
-const io = socket(server);
+const io = socketIo(server);
 
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
 
 // Serve static files from the client directory
-app.use(express.static(path.join(__dirname, 'client')));
+app.use(express.static(path.join(__dirname)));
 
-// Serve the index.html file on the root route
+// Serve the index.html file on root request
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 io.on('connection', (socket) => {
-    console.log('New user connected');
+    console.log('New client connected');
 
-    socket.on('chat', (data) => {
-        io.sockets.emit('chat', data);
+    socket.on('join', (data) => {
+        socket.userId = data.userId;
+        socket.nickname = data.nickname;
+        console.log(`${data.nickname} (${data.userId}) joined the chat`);
     });
 
-    socket.on('typing', (data) => {
-        socket.broadcast.emit('typing', data);
+    socket.on('sendMessage', (message) => {
+        io.emit('receiveMessage', message);
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log('Client disconnected');
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+server.listen(5000, () => {
+    console.log('Server running on port 5000');
 });
