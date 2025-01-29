@@ -1,12 +1,12 @@
 {
-  "name": "chat-room",
+  "name": "chat-room-server",
   "version": "1.0.0",
   "description": "A simple chat room using Socket.io and Express",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Ayanfe",
+  "author": "ayanfe",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
@@ -14,3 +14,4 @@
     "http": "0.0.1-security",
     "socket.io": "^4.4.0"
   }
+}
