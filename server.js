@@ -1,12 +1,13 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'client')));
 
 io.on('connection', (socket) => {
     console.log('New user connected');
@@ -18,6 +19,11 @@ io.on('connection', (socket) => {
 
     socket.on('chat', (data) => {
         console.log('Message received:', data);
+        io.emit('chat', data);
+    });
+
+    socket.on('fileUpload', (data) => {
+        console.log('File uploaded:', data);
         io.emit('chat', data);
     });
 
