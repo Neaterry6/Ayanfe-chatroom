@@ -46,9 +46,7 @@ message.addEventListener('keypress', (e) => {
         sendMessage();
     }
     socket.emit('typing', { username });
-});
-
-socket.on('chat', (data) => {
+});socket.on('chat', (data) => {
     feedback.innerHTML = '';
     const messageClass = data.username === username ? 'user-message' : 'other-message';
     output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
@@ -77,4 +75,3 @@ function fetchAIResponse(query) {
         .catch(error => {
             console.error('Error fetching AI response:', error);
         });
-}
