@@ -23,6 +23,7 @@ joinChatButton.addEventListener('click', () => {
     username = usernameInput.value;
     loginContainer.style.display = 'none';
     chatContainer.style.display = 'block';
+    console.log('User joined:', username); // Log user join
     socket.emit('join', { username });
 });
 
@@ -37,6 +38,7 @@ function sendMessage() {
     if (message.value.trim() === '') {
         return;
     }
+    console.log('Sending message:', message.value); // Log message send
     socket.emit('chat', {
         message: message.value,
         username: username
@@ -56,6 +58,7 @@ socket.on('chat', (data) => {
     feedback.innerHTML = '';
     const messageClass = data.username === username ? 'user-message' : 'other-message';
     if (data.message) {
+        console.log('Message received:', data.message); // Log received message
         output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
     }
     if (data.file) {
