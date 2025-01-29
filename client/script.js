@@ -67,4 +67,4 @@ function displayMessage(sender, message, className) {
     messageElement.textContent = `${sender}: ${message}`;
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+}
