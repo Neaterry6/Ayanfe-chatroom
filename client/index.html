@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devs chat-world</title>
+    <title>devs-chatroom</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h2>Chat Room</h2>
         <div id="join-screen">
-            <input type="text" id="nickname-input" class="input-field" placeholder="Enter your nickname"><button class="btn" id="join-btn">Join Chat</button>
+            <input type="text" id="nickname-input" class="input-field" placeholder="Enter your nickname">
+            <button class="btn" id="join-btn">Join Chat</button>
         </div>
         <div id="chat-screen" style="display: none;">
             <div id="chat-messages" class="chat-messages"></div>
@@ -22,4 +23,4 @@
     <script src="https://cdn.socket.io/4.4.0/socket.io.min.js"></script>
     <script src="script.js"></script>
 </body>
-</html
+</html>
