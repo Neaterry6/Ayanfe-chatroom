@@ -5,8 +5,9 @@ body {
     padding: 0;
 }
 
-#chat-container {
-    max-width: 800px;
+#login-container, #chat-container {
+    display: none;
+    max-width: 500px;
     margin: 50px auto;
     background: white;
     padding: 30px;
@@ -14,8 +15,8 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#login-container, #chat-container {
-    display: none;
+#login-container {
+    display: block;
 }
 
 #chat-window {
