@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #121212; /* Dark background for the entire page */
+    color: white; /* Light text for readability */
     margin: 0;
     padding: 0;
 }
@@ -9,10 +10,11 @@ body {
     display: none;
     max-width: 500px;
     margin: 50px auto;
-    background: white;
+    background: #1f1f1f; /* Dark background for containers */
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: white; /* Light text for readability */
 }
 
 #login-container {
@@ -22,10 +24,10 @@ body {
 #chat-window {
     height: 400px;
     overflow-y: auto;
-    border: 1px solid #ddd;
+    border: 1px solid #333; /* Darker border */
     padding: 10px;
     margin-bottom: 20px;
-    background-color: #fff;
+    background-color: #1a1a1a; /* Dark background for chat window */
     border-radius: 8px;
 }
 
@@ -39,34 +41,38 @@ body {
     border-radius: 4px;
     max-width: 70%;
     word-wrap: break-word; /* Ensure long words break to fit within the message box */
+    background-color: #2a2a2a; /* Darker background for messages */
+    color: white; /* Light text for readability */
 }
 
 .user-message {
-    background-color: #d9f2ff;
+    background-color: #2b2b2b; /* Slightly lighter dark background for user messages */
     text-align: right; /* Align user's messages to the right */
 }
 
 .other-message {
-    background-color: #f1f1f1;
+    background-color: #2a2a2a; /* Dark background for other messages */
     text-align: left; /* Align other messages to the left */
 }
 
 #feedback {
     font-style: italic;
-    color: gray;
+    color: lightgray;
 }
 
 input[type="text"] {
     width: calc(100% - 110px);
     padding: 10px;
     margin-right: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #555; /* Darker border */
     border-radius: 4px;
+    background-color: #2a2a2a; /* Dark background for input */
+    color: white; /* Light text for readability */
 }
 
 button {
     padding: 10px 20px;
-    background: #28a745;
+    background: #28a745; /* Dark green background for buttons */
     border: none;
     border-radius: 4px;
     color: white;
@@ -74,5 +80,5 @@ button {
 }
 
 button:hover {
-    background: #218838;
-}
+    background: #218838; /* Darker green background for hover effect */
+    }
