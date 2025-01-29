@@ -10,7 +10,9 @@ const send = document.getElementById('send');
 const tagAI = document.getElementById('tag-ai');
 const output = document.getElementById('output');
 const feedback = document.getElementById('feedback');
-const AI_TAG = '@bot'; // The tag to mention the AI
+const fileInput = document.getElementById('file-input');
+const uploadButton = document.getElementById('upload');
+const AI_TAG = '@Ai'; // The tag to mention the AI
 let username = '';
 
 joinChatButton.addEventListener('click', () => {
@@ -18,10 +20,8 @@ joinChatButton.addEventListener('click', () => {
         return alert("Please enter a nickname");
     }
     username = usernameInput.value;
-    console.log('Username:', username); // Debug log
     loginContainer.style.display = 'none';
     chatContainer.style.display = 'block';
-    console.log('Containers updated'); // Debug log
     socket.emit('join', { username });
 });
 
@@ -30,6 +30,7 @@ tagAI.addEventListener('click', () => {
     message.value += ` ${AI_TAG}`;
     message.focus();
 });
+uploadButton.addEventListener('click', uploadFile);
 
 function sendMessage() {
     if (message.value.trim() === '') {
@@ -53,7 +54,14 @@ message.addEventListener('keypress', (e) => {
 socket.on('chat', (data) => {
     feedback.innerHTML = '';
     const messageClass = data.username === username ? 'user-message' : 'other-message';
-    output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
+    if (data.message) {
+        output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
+    }
+    if (data.file) {
+        const fileType = data.fileType.startsWith('image') ? 'image' : 'audio';
+        const fileElement = fileType === 'image' ? `<img src="${data.file}" alt="Image"/>` : `<audio controls><source src="${data.file}" type="${data.fileType}"></audio>`;
+        output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong><br>${fileElement}</p>`;
+    }
     output.scrollTop = output.scrollHeight; // Scroll to the bottom
 });
 
@@ -79,4 +87,5 @@ function fetchAIResponse(query) {
         .catch(error => {
             console.error('Error fetching AI response:', error);
         });
-}
+}function uploadFile() {
+    const file = file⁽¹⁾⁽²⁾⁽³⁾⁽⁴⁾⁽⁵⁾⁽⁶⁾⁽⁷⁾⁽⁸
