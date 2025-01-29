@@ -20,6 +20,7 @@ joinChatButton.addEventListener('click', () => {
     username = usernameInput.value;
     loginContainer.style.display = 'none';
     chatContainer.style.display = 'block';
+    socket.emit('join', { username });
 });
 
 send.addEventListener('click', sendMessage);
@@ -44,7 +45,7 @@ message.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendMessage();
     }
-    socket.emit('typing', username);
+    socket.emit('typing', { username });
 });
 
 socket.on('chat', (data) => {
@@ -55,7 +56,7 @@ socket.on('chat', (data) => {
 });
 
 socket.on('typing', (data) => {
-    feedback.innerHTML = `<p><em>@${data} is typing...</em></p>`;
+    feedback.innerHTML = `<p><em>@${data.username} is typing...</em></p>`;
 });
 
 function checkAIResponse(msg) {
