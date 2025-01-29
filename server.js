@@ -7,6 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Serve static files from the 'client' directory
 app.use(express.static(path.join(__dirname, 'client')));
 
 io.on('connection', (socket) => {
@@ -38,4 +39,4 @@ io.on('connection', (socket) => {
 
 server.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
-})
+});
