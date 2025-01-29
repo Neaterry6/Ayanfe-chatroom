@@ -45,13 +45,14 @@ body {
     color: white; /* Light text for readability */
 }
 
-.user-message {background-color: #2b2b2b; /* Slightly lighter dark background for user messages _/
-    text-align: right; /_ Align user's messages to the right */
+.user-message {
+    background-color: #2b2b2b; /* Slightly lighter dark background for user messages */
+    text-align: right; /* Align user's messages to the right */
 }
 
 .other-message {
-    background-color: #2a2a2a; /* Dark background for other messages _/
-    text-align: left; /_ Align other messages to the left */
+    background-color: #2a2a2a; /* Dark background for other messages */
+    text-align: left; /* Align other messages to the left */
 }
 
 #feedback {
@@ -63,10 +64,10 @@ input[type="text"] {
     width: calc(100% - 110px);
     padding: 10px;
     margin-right: 10px;
-    border: 1px solid #555; /* Darker border _/
+    border: 1px solid #555; /* Darker border */
     border-radius: 4px;
-    background-color: #2a2a2a; /_ Dark background for input _/
-    color: white; /_ Light text for readability */
+    background-color: #2a2a2a; /* Dark background for input */
+    color: white; /* Light text for readability */
 }
 
 button {
@@ -80,4 +81,4 @@ button {
 
 button:hover {
     background: #218838; /* Darker green background for hover effect */
-        }
+}
