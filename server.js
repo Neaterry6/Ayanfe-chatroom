@@ -9,7 +9,13 @@ const io = socket(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, '../client')));
+// Serve static files from the client directory
+app.use(express.static(path.join(__dirname, 'client')));
+
+// Serve the index.html file on the root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+});
 
 io.on('connection', (socket) => {
     console.log('New user connected');
