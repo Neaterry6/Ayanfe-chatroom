@@ -12,9 +12,10 @@ const output = document.getElementById('output');
 const feedback = document.getElementById('feedback');
 const fileInput = document.getElementById('file-input');
 const uploadButton = document.getElementById('upload');
-const AI_TAG = '@Ai'; // The tag to mention the AI
+const AI_TAG = '@bot'; // The tag to mention the AI
 let username = '';
 
+// Event listener for the "Join Chat" button
 joinChatButton.addEventListener('click', () => {
     if (usernameInput.value.trim() === '') {
         return alert("Please enter a nickname");
@@ -87,5 +88,20 @@ function fetchAIResponse(query) {
         .catch(error => {
             console.error('Error fetching AI response:', error);
         });
-}function uploadFile() {
-    const file = file⁽¹⁾⁽²⁾⁽³⁾⁽⁴⁾⁽⁵⁾⁽⁶⁾⁽⁷⁾⁽⁸
+}
+
+function uploadFile() {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        socket.emit('fileUpload', {
+            file: e.target.result,
+            fileName: file.name,
+            fileType: file.type,
+            username: username
+        });
+    };
+    reader.readAsDataURL(file);
+    }
