@@ -7,6 +7,7 @@ const usernameInput = document.getElementById('username');
 
 const message = document.getElementById('message');
 const send = document.getElementById('send');
+const tagAI = document.getElementById('tag-ai');
 const output = document.getElementById('output');
 const feedback = document.getElementById('feedback');
 const AI_TAG = '@bot'; // The tag to mention the AI
@@ -21,7 +22,13 @@ joinChatButton.addEventListener('click', () => {
     chatContainer.style.display = 'block';
 });
 
-send.addEventListener('click', () => {
+send.addEventListener('click', sendMessage);
+tagAI.addEventListener('click', () => {
+    message.value += ` ${AI_TAG}`;
+    message.focus();
+});
+
+function sendMessage() {
     if (message.value.trim() === '') {
         return;
     }
@@ -31,9 +38,12 @@ send.addEventListener('click', () => {
     });
     checkAIResponse(message.value); // Check if AI is mentioned
     message.value = '';
-});
+}
 
-message.addEventListener('keypress', () => {
+message.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
     socket.emit('typing', username);
 });
 
