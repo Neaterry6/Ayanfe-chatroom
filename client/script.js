@@ -79,4 +79,4 @@ function fetchAIResponse(query) {
         .catch(error => {
             console.error('Error fetching AI response:', error);
         });
-        }
+}
