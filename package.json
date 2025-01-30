@@ -1,17 +1,13 @@
 {
-  "name": "chat-room-server",
+  "name": "chat-app",
   "version": "1.0.0",
-  "description": "A simple chat room using Socket.io and Express",
+  "description": "A simple chat application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "ayanfe",
-  "license": "MIT",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "http": "0.0.1-security",
-    "socket.io": "^4.4.0"
+    "socket.io": "^4.0.0"
   }
 }
