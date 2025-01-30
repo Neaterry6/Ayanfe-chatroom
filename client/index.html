@@ -3,33 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Room</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Modern Chat Room</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #chat-container {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-window {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin: 0.5rem 0;
+            padding: 0.8rem 1rem;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            background: #0084ff;
+            color: white;
+            margin-left: auto;
+        }
+
+        .received {
+            background: #e4e6eb;
+            color: black;
+            margin-right: auto;
+        }
+
+        .controls {
+            padding: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            border-top: 1px solid #ddd;
+        }
+
+        input[type="text"] {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: #0084ff;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0073e6;
+        }
+
+        #feedback {
+            padding: 0.5rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timestamp {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.2rem;
+        }
+
+        .user-joined {
+            text-align: center;
+            color: #666;
+            margin: 0.5rem 0;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-    <!-- Join Screen -->
-    <div id="join-screen" class="screen">
-        <h2>Login to Chat</h2>
-        <input type="text" id="nickname-input" placeholder="Enter your nickname">
-        <button id="join-btn">Join Chat</button>
+    <div id="login-container">
+        <h2>Welcome to Chat</h2>
+        <p style="margin: 1rem 0; color: #666;">Enter a nickname to join the conversation</p>
+        <input type="text" id="username" placeholder="Your nickname">
+        <button id="join-chat">Join Chat</button>
     </div>
 
-    <!-- Chat Screen -->
-    <div id="chat-screen" class="screen">
+    <div id="chat-container" style="display: none;">
         <div id="chat-window">
-            <div id="chat-messages"></div>
+            <div id="output"></div>
             <div id="feedback"></div>
         </div>
-        <div id="chat-input-container">
-            <input type="text" id="message-input" placeholder="Type your message">
-            <button id="send">Send</button>
-            <input type="file" id="file-input" accept="image/*,video/*,audio/*">
-            <button id="upload">Upload</button>
-            <button id="record">Record Voice Note</button>
+        <div class="controls">
+            <input type="text" id="message" placeholder="Type your message...">
+            <button id="send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <button id="tag-ai">AI</button>
+            <div class="file-upload">
+                <input type="file" id="file-input" style="display: none">
+                <button id="upload-trigger">
+                    <i class="fas fa-paperclip"></i>
+                </button>
+                <button id="upload" style="display: none">Upload</button>
+                <button id="record">Record Voice Note</button>
+            </div>
         </div>
     </div>
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+        const loginContainer = document.getElementById('login-container');
+        const chatContainer = document.getElementById('chat-container');
+        const output = document.getElementById('output');
+        const feedback = document.getElementById('feedback');
+        const message = document.getElementById('message');
+        const username = document.getElementById('username');
+        const joinChat = document.getElementById('join-chat');
+        const sendBtn = document.getElementById('send');
+        const uploadTrigger = document.getElementById('upload-trigger');
+        const fileInput = document.getElementById('file-input');
+
+        let currentUser = '';
+
+        
+        joinChat.addEventListener('click', () => {
+            if (username.value.trim()) {
+                currentUser = username.value;
+                loginContainer.style.display = 'none';
+                chatContainer.style.display = 'flex';
+                addMessage(`${currentUser} joined the chat`, 'user-joined');
+            }
+        });
+
+        
+        function sendMessage() {
+            if (message.value.trim()) {
+                const timestamp = new Date().toLocaleTimeString();
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent';
+                messageDiv.innerHTML = `
+                    ${message.value}
+                    <div class="timestamp">${timestamp}</div>
+                `;
+                output.appendChild(messageDiv);
+                message.value = '';
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        
+        function addMessage(text, className) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = className;
+            messageDiv.textContent = text;
+            output.appendChild(messageDiv);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        
+        sendBtn.addEventListener('click', sendMessage);
+        message.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        uploadTrigger.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                addMessage(`File selected: ${fileName}`, 'user-joined');
+            }
+        });
+
+      
+        message.addEventListener('input', () => {
+            if (message.value.trim()) {
+                feedback.textContent = `${currentUser} is typing...`;
+            } else {
+                feedback.textContent = '';
+            }
+        });
+    </script>
 </body>
-</html>
+        </html>
