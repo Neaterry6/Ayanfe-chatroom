@@ -52,8 +52,7 @@ messageInput.addEventListener('keypress', (e) => {
 });
 
 socket.on('chat', (data) => {
-    feedback.innerHTML = '';
-    const messageClass = data.username === username ? 'user-message' : 'other-message';
+    feedback.innerHTML = '';const messageClass = data.username === username ? 'user-message' : 'other-message';
     if (data.message) {
         console.log('Message received:', data.message); // Log received message
         output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
@@ -110,7 +109,8 @@ function uploadFile() {
 
 // Voice note recording
 recordButton.addEventListener('click', () => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {mediaRecorder.stop();
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
         recordButton.textContent = 'Record Voice Note';
     } else {
         startRecording();
@@ -144,4 +144,4 @@ function startRecording() {
         .catch(error => {
             console.error('Error accessing microphone:', error);
         });
-                                }
+                }
