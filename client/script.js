@@ -21,7 +21,7 @@ let audioChunks = [];
 // Event listener for the "Join Chat" button
 joinChat.addEventListener('click', () => {
     if (username.value.trim()) {
-        currentUser = username.value;
+        currentUser = username.value.trim();
         loginContainer.style.display = 'none';
         chatContainer.style.display = 'flex';
         socket.emit('join', { username: currentUser });
