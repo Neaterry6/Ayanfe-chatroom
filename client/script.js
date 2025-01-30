@@ -7,13 +7,14 @@ const usernameInput = document.getElementById('username');
 
 const message = document.getElementById('message');
 const send = document.getElementById('send');
-const tagAI = document.getElementById('tag-ai');
 const output = document.getElementById('output');
 const feedback = document.getElementById('feedback');
 const fileInput = document.getElementById('file-input');
 const uploadButton = document.getElementById('upload');
-const AI_TAG = '@bot'; // The tag to mention the AI
+const recordButton = document.getElementById('record');
 let username = '';
+let mediaRecorder;
+let audioChunks = [];
 
 // Event listener for the "Join Chat" button
 joinChatButton.addEventListener('click', () => {
@@ -23,27 +24,21 @@ joinChatButton.addEventListener('click', () => {
     username = usernameInput.value;
     loginContainer.style.display = 'none';
     chatContainer.style.display = 'block';
-    console.log('User joined:', username); // Log user join
     socket.emit('join', { username });
 });
 
 send.addEventListener('click', sendMessage);
-tagAI.addEventListener('click', () => {
-    message.value += ` ${AI_TAG}`;
-    message.focus();
-});
 uploadButton.addEventListener('click', uploadFile);
+recordButton.addEventListener('click', recordVoiceNote);
 
 function sendMessage() {
     if (message.value.trim() === '') {
         return;
     }
-    console.log('Sending message:', message.value); // Log message send
     socket.emit('chat', {
         message: message.value,
         username: username
     });
-    checkAIResponse(message.value); // Check if AI is mentioned
     message.value = '';
 }
 
@@ -58,7 +53,6 @@ socket.on('chat', (data) => {
     feedback.innerHTML = '';
     const messageClass = data.username === username ? 'user-message' : 'other-message';
     if (data.message) {
-        console.log('Message received:', data.message); // Log received message
         output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
     }
     if (data.file) {
@@ -72,26 +66,6 @@ socket.on('chat', (data) => {
 socket.on('typing', (data) => {
     feedback.innerHTML = `<p><em>@${data.username} is typing...</em></p>`;
 });
-
-function checkAIResponse(msg) {
-    if (msg.includes(AI_TAG)) {
-        fetchAIResponse(msg);
-    }
-}
-
-function fetchAIResponse(query) {
-    fetch(`https://ai-yg2z.onrender.com/ai?query=${encodeURIComponent(query)}`)
-        .then(response => response.json())
-        .then(data => {
-            socket.emit('chat', {
-                message: data.response, // Assuming the API returns a field named 'response'
-                username: 'AI'
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching AI response:', error);
-        });
-}
 
 function uploadFile() {
     const file = fileInput.files[0];
@@ -107,4 +81,38 @@ function uploadFile() {
         });
     };
     reader.readAsDataURL(file);
-        }
+}
+
+function recordVoiceNote() {
+    if (recordButton.innerText === 'Record Voice Note') {
+        recordButton.innerText = 'Stop Recording';
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                mediaRecorder.ondataavailable = function (e) {
+                    audioChunks.push(e.data);
+                };
+                mediaRecorder.onstop = function () {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        socket.emit('fileUpload', {
+                            file: e.target.result,
+                            fileName: 'voice-note.wav',
+                            fileType: 'audio/wav',
+                            username: username
+                        });
+                    };
+                    reader.readAsDataURL(audioBlob);
+                };
+            })
+            .catch(error => {
+                console.error('Error accessing media devices.', error);
+            });
+    } else {
+        recordButton.innerText = 'Record Voice Note';
+        mediaRecorder.stop();
+    }
+}
