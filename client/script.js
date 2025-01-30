@@ -17,10 +17,16 @@ let audioChunks = [];
 // Event listener for the "Join Chat" button
 document.getElementById('join-btn').addEventListener('click', () => {
     nickname = nicknameInput.value.trim();
+    console.log(`Nickname entered: ${nickname}`); // Log the entered nickname
+
     if (nickname) {
         joinScreen.style.display = 'none';
         chatScreen.style.display = 'flex';
+        console.log(`Switched to chat screen for nickname: ${nickname}`); // Log the screen transition
+
         socket.emit('join', { userId: nickname, nickname: nickname });
+    } else {
+        console.error('Nickname is empty'); // Log if the nickname is empty
     }
 });
 
@@ -104,13 +110,13 @@ recordButton.addEventListener('click', () => {
     }
 });
 
-function startRecording() {
-    navigator.mediaDevices.getUserMedia({ audio: true })
+function startRecording() {navigator.mediaDevices.getUserMedia({ audio: true })
         .then(stream => {
             mediaRecorder = new MediaRecorder(stream);
             mediaRecorder.ondataavailable = (event) => {
                 audioChunks.push(event.data);
-            };mediaRecorder.onstop = () => {
+            };
+            mediaRecorder.onstop = () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                 const reader = new FileReader();
                 reader.onload = function (e) {
@@ -129,4 +135,4 @@ function startRecording() {
         .catch(error => {
             console.error('Error accessing microphone:', error);
         });
-}
+            }
