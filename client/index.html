@@ -8,24 +8,25 @@
 </head>
 <body>
     <!-- Join Screen -->
-    <div id="join-screen">
+    <div id="join-screen" class="screen">
         <h2>Login to Chat</h2>
         <input type="text" id="nickname-input" placeholder="Enter your nickname">
         <button id="join-btn">Join Chat</button>
     </div>
 
     <!-- Chat Screen -->
-    <div id="chat-screen" style="display: none;">
+    <div id="chat-screen" class="screen">
         <div id="chat-window">
             <div id="chat-messages"></div>
             <div id="feedback"></div>
         </div>
-        <input type="text" id="message-input" placeholder="Type your message">
-        <button id="send">Send</button>
-        <!-- New elements for file upload and voice recording -->
-        <input type="file" id="file-input" accept="image/*,video/*,audio/*">
-        <button id="upload">Upload</button>
-        <button id="record">Record Voice Note</button>
+        <div id="chat-input-container">
+            <input type="text" id="message-input" placeholder="Type your message">
+            <button id="send">Send</button>
+            <input type="file" id="file-input" accept="image/*,video/*,audio/*">
+            <button id="upload">Upload</button>
+            <button id="record">Record Voice Note</button>
+        </div>
     </div>
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
