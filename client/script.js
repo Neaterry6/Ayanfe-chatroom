@@ -1,73 +1,61 @@
-const socket = io.connect('http://localhost:3000');
+const socket = io("http://localhost:5000");
 
-const loginContainer = document.getElementById('login-container');
-const chatContainer = document.getElementById('chat-container');
-const joinChatButton = document.getElementById('join-chat');
-const usernameInput = document.getElementById('username');
-
-const messageInput = document.getElementById('message');
-const sendButton = document.getElementById('send');
-const output = document.getElementById('output');
-const feedback = document.getElementById('feedback');
+const joinScreen = document.getElementById('join-screen');
+const chatScreen = document.getElementById('chat-screen');
+const nicknameInput = document.getElementById('nickname-input');
+const messageInput = document.getElementById('message-input');
+const chatMessages = document.getElementById('chat-messages');
 const fileInput = document.getElementById('file-input');
 const uploadButton = document.getElementById('upload');
 const recordButton = document.getElementById('record');
 const AI_TAG = '@bot'; // The tag to mention the AI
-let username = '';
+let nickname = '';
 let mediaRecorder;
 let audioChunks = [];
 
 // Event listener for the "Join Chat" button
-joinChatButton.addEventListener('click', () => {
-    if (usernameInput.value.trim() === '') {
-        return alert("Please enter a nickname");
+document.getElementById('join-btn').addEventListener('click', () => {
+    nickname = nicknameInput.value.trim();
+    if (nickname) {
+        joinScreen.style.display = 'none';
+        chatScreen.style.display = 'flex';
+        socket.emit('join', { userId: nickname, nickname: nickname });
     }
-    username = usernameInput.value;
-    loginContainer.style.display = 'none';
-    chatContainer.style.display = 'block';
-    console.log('User joined:', username); // Log user join
-    socket.emit('join', { username });
 });
 
-sendButton.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && messageInput.value.trim()) {
+        sendMessage(messageInput.value.trim());
+        messageInput.value = '';
+    }
+});
 
-function sendMessage() {
+sendButton.addEventListener('click', () => {
     if (messageInput.value.trim() === '') {
         return;
     }
-    console.log('Sending message:', messageInput.value); // Log message send
-    socket.emit('chat', {
-        message: messageInput.value,
-        username: username
-    });
-    checkAIResponse(messageInput.value); // Check if AI is mentioned
+    sendMessage(messageInput.value.trim());
     messageInput.value = '';
+});
+
+function sendMessage(message) {
+    displayMessage(nickname, message, 'user-message');
+    socket.emit('sendMessage', { userId: nickname, nickname: nickname, text: message });
+    checkAIResponse(message); // Check if AI is mentioned
 }
 
-messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-    socket.emit('typing', { username });
+socket.on('receiveMessage', (data) => {
+    const messageClass = data.nickname === nickname ? 'user-message' : 'ai-message';
+    displayMessage(data.nickname, data.text, messageClass);
 });
 
-socket.on('chat', (data) => {
-    feedback.innerHTML = '';const messageClass = data.username === username ? 'user-message' : 'other-message';
-    if (data.message) {
-        console.log('Message received:', data.message); // Log received message
-        output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong> ${data.message}</p>`;
-    }
-    if (data.file) {
-        const fileType = data.fileType.startsWith('image') ? 'image' : 'audio';
-        const fileElement = fileType === 'image' ? `<img src="${data.file}" alt="Image"/>` : `<audio controls><source src="${data.file}" type="${data.fileType}"></audio>`;
-        output.innerHTML += `<p class="${messageClass}"><strong>@${data.username}:</strong><br>${fileElement}</p>`;
-    }
-    output.scrollTop = output.scrollHeight; // Scroll to the bottom
-});
-
-socket.on('typing', (data) => {
-    feedback.innerHTML = `<p><em>@${data.username} is typing...</em></p>`;
-});
+function displayMessage(sender, message, className) {
+    const messageElement = document.createElement('div');
+    messageElement.className = className;
+    messageElement.textContent = `${sender}: ${message}`;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
 function checkAIResponse(msg) {
     if (msg.includes(AI_TAG)) {
@@ -79,10 +67,7 @@ function fetchAIResponse(query) {
     fetch(`https://ai-yg2z.onrender.com/ai?query=${encodeURIComponent(query)}`)
         .then(response => response.json())
         .then(data => {
-            socket.emit('chat', {
-                message: data.response, // Assuming the API returns a field named 'response'
-                username: 'AI'
-            });
+            socket.emit('sendMessage', { userId: 'AI', nickname: 'AI', text: data.response }); // Assuming the API returns a field named 'response'
         })
         .catch(error => {
             console.error('Error fetching AI response:', error);
@@ -101,7 +86,7 @@ function uploadFile() {
             file: e.target.result,
             fileName: file.name,
             fileType: file.type,
-            username: username
+            username: nickname
         });
     };
     reader.readAsDataURL(file);
@@ -126,14 +111,13 @@ function startRecording() {
                 audioChunks.push(event.data);
             };
             mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                const reader = new FileReader();
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });const reader = new FileReader();
                 reader.onload = function (e) {
                     socket.emit('fileUpload', {
                         file: e.target.result,
                         fileName: 'voiceNote.wav',
                         fileType: 'audio/wav',
-                        username: username
+                        username: nickname
                     });
                 };
                 reader.readAsDataURL(audioBlob);
@@ -144,4 +128,4 @@ function startRecording() {
         .catch(error => {
             console.error('Error accessing microphone:', error);
         });
-                }
+}
