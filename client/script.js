@@ -8,7 +8,8 @@ const chatMessages = document.getElementById('chat-messages');
 const fileInput = document.getElementById('file-input');
 const uploadButton = document.getElementById('upload');
 const recordButton = document.getElementById('record');
-const AI_TAG = '@bot'; // The tag to mention the AI
+const sendButton = document.getElementById('send');
+const AI_TAG = '@Ai'; // The tag to mention the AI
 let nickname = '';
 let mediaRecorder;
 let audioChunks = [];
@@ -109,9 +110,9 @@ function startRecording() {
             mediaRecorder = new MediaRecorder(stream);
             mediaRecorder.ondataavailable = (event) => {
                 audioChunks.push(event.data);
-            };
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });const reader = new FileReader();
+            };mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const reader = new FileReader();
                 reader.onload = function (e) {
                     socket.emit('fileUpload', {
                         file: e.target.result,
