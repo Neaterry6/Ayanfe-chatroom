@@ -1,13 +1,16 @@
 {
-  "name": "chat-app",
+  "name": "chat-room",
   "version": "1.0.0",
-  "description": "A simple chat application",
+  "description": "A simple chat room application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "socket.io": "^4.0.0"
-  }
+    "socket.io": "^4.4.0"
+  },
+  "author": "Your Name",
+  "license": "MIT"
 }
